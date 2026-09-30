@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panda Login</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background:
+            radial-gradient(circle at top left, #6c63ff 0%, transparent 35%),
+            radial-gradient(circle at bottom right, #ff5fa2 0%, transparent 35%),
+            #111;
+        overflow: hidden;
+    }
+
+    /* Background circles */
+    body::before,
+    body::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(5px);
+        opacity: 0.5;
+    }
+
+    body::before {
+        width: 250px;
+        height: 250px;
+        background: #00e5ff;
+        top: -80px;
+        right: -60px;
+    }
+
+    body::after {
+        width: 300px;
+        height: 300px;
+        background: #ff00cc;
+        bottom: -120px;
+        left: -100px;
+    }
+
+    .login-box {
+        position: relative;
+        width: 380px;
+        padding: 35px;
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        z-index: 2;
+    }
+
+    /* PANDA */
+    .panda {
+        position: relative;
+        width: 150px;
+        height: 135px;
+        margin: 0 auto 25px;
+        background: white;
+        border-radius: 48% 48% 45% 45%;
+        border: 4px solid #222;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    /* Ears */
+    .ear {
+        position: absolute;
+        width: 48px;
+        height: 48px;
+        background: #181818;
+        border-radius: 50%;
+        top: -20px;
+        z-index: -1;
+    }
+
+    .ear.left {
+        left: -8px;
+    }
+
+    .ear.right {
+        right: -8px;
+    }
+
+    /* Eye patches */
+    .eye-patch {
+        position: absolute;
+        width: 45px;
+        height: 58px;
+        background: #181818;
+        border-radius: 50%;
+        top: 38px;
+    }
+
+    .eye-patch.left {
+        left: 25px;
+        transform: rotate(30deg);
+    }
+
+    .eye-patch.right {
+        right: 25px;
+        transform: rotate(-30deg);
+    }
+
+    /* Eyes */
+    .eye {
+        position: absolute;
+        width: 11px;
+        height: 15px;
+        background: white;
+        border-radius: 50%;
+        top: 20px;
+        left: 17px;
+        transition: 0.2s;
+    }
+
+    .pupil {
+        position: absolute;
+        width: 6px;
+        height: 9px;
+        background: #111;
+        border-radius: 50%;
+        top: 4px;
+        left: 3px;
+    }
+
+    /* Nose */
+    .nose {
+        position: absolute;
+        width: 22px;
+        height: 15px;
+        background: #111;
+        border-radius: 50%;
+        top: 82px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Mouth */
+    .mouth {
+        position: absolute;
+        width: 25px;
+        height: 12px;
+        border-bottom: 3px solid #111;
+        border-radius: 50%;
+        top: 91px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* PANDA HANDS */
+    .hand {
+        position: absolute;
+        width: 48px;
+        height: 35px;
+        background: #181818;
+        border-radius: 50%;
+        top: 52px;
+        z-index: 5;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.35s ease;
+    }
+
+    .hand.left {
+        left: -20px;
+        transform: rotate(25deg) scale(0);
+    }
+
+    .hand.right {
+        right: -20px;
+        transform: rotate(-25deg) scale(0);
+    }
+
+    /* When password is active */
+    .panda.cover-eyes .hand.left {
+        opacity: 1;
+        transform: rotate(25deg) scale(1);
+    }
+
+    .panda.cover-eyes .hand.right {
+        opacity: 1;
+        transform: rotate(-25deg) scale(1);
+    }
+
+    .panda.cover-eyes .eye {
+        opacity: 0;
+    }
+
+    h1 {
+        color: white;
+        font-size: 30px;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .input-box {
+        position: relative;
+        margin-bottom: 18px;
+    }
+
+    .input-box input {
+        width: 100%;
+        padding: 15px 18px;
+        border: none;
+        outline: none;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: white;
+        font-size: 15px;
+        transition: 0.3s;
+    }
+
+    .input-box input::placeholder {
+        color: rgba(255,255,255,0.6);
+    }
+
+    .input-box input:focus {
+        border-color: #fff;
+        background: rgba(255,255,255,0.2);
+        box-shadow: 0 0 15px rgba(255,255,255,0.15);
+    }
+
+    .options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: rgba(255,255,255,0.8);
+        font-size: 13px;
+        margin: 5px 0 22px;
+    }
+
+    .options a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #7c4dff, #ff4081);
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 8px 20px rgba(124, 77, 255, 0.35);
+    }
+
+    .login-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(255, 64, 129, 0.45);
+    }
+
+    .login-btn:active {
+        transform: scale(0.98);
+    }
+
+    .signup {
+        color: rgba(255,255,255,0.7);
+        font-size: 13px;
+        margin-top: 22px;
+    }
+
+    .signup a {
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    /* Mobile */
+    @media (max-width: 450px) {
+        .login-box {
+            width: 90%;
+            padding: 30px 22px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <!-- PANDA -->
+    <div class="panda" id="panda">
+
+        <div class="ear left"></div>
+        <div class="ear right"></div>
+
+        <div class="eye-patch left">
+            <div class="eye">
+                <div class="pupil"></div>
+            </div>
+        </div>
+
+        <div class="eye-patch right">
+            <div class="eye">
+                <div class="pupil"></div>
+            </div>
+        </div>
+
+        <div class="nose"></div>
+        <div class="mouth"></div>
+
+        <!-- Hands -->
+        <div class="hand left"></div>
+        <div class="hand right"></div>
+
+    </div>
+
+    <h1>Welcome Back 🐼</h1>
+    <p class="subtitle">Login to enter the panda zone</p>
+
+    <form id="loginForm">
+
+        <div class="input-box">
+            <input
+                type="text"
+                id="username"
+                placeholder="Username"
+                autocomplete="username"
+                required
+            >
+        </div>
+
+        <div class="input-box">
+            <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                autocomplete="current-password"
+                required
+            >
+        </div>
+
+        <div class="options">
+            <label>
+                <input type="checkbox">
+                Remember me
+            </label>
+
+            <a href="#">Forgot password?</a>
+        </div>
+
+        <button class="login-btn" type="submit">
+            LOGIN
+        </button>
+
+    </form>
+
+    <p class="signup">
+        Don't have an account?
+        <a href="#">Sign Up</a>
+    </p>
+
+</div>
+
+<script>
+    const panda = document.getElementById("panda");
+    const password = document.getElementById("password");
+    const form = document.getElementById("loginForm");
+
+    // Panda covers its eyes when password is being entered
+    password.addEventListener("focus", () => {
+        panda.classList.add("cover-eyes");
+    });
+
+    password.addEventListener("input", () => {
+        panda.classList.add("cover-eyes");
+    });
+
+    password.addEventListener("blur", () => {
+        if (password.value.length === 0) {
+            panda.classList.remove("cover-eyes");
+        }
+    });
+
+    // Demo login action
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById("username").value;
+
+        alert("Welcome, " + username + " 🐼!");
+    });
+</script>
+
+</body>
+</html>
